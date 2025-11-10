@@ -241,7 +241,7 @@
             outline: none;
         }
 
-        .form-row { gap: 0.8em; margin-bottom: 0.5em; display: flex; }
+        .form-row { gap: 0.8em; margin-bottom: 0.5em; }
         
         .form-group { 
             flex: 1; 
@@ -789,14 +789,19 @@
                 
                 <div class="input-section">
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="startDateDay">Berlaku Sampai (Tanggal Jatuh Tempo)</label>
-                            <div class="form-row" id="startDateFlex" style="gap: 5px; margin-bottom: 0;"> <select id="startDateDay" style="flex: 1;"></select>
-                                <select id="startDateMonth" style="flex: 3;"></select>
-                                <select id="startDateYear" style="flex: 2;"></select>
-                            </div>
-                            <p style="color: gray;">* Lihat masa berlaku dari STNK/SKPD.</p>
-                        </div>
+<div class="form-group">
+    <label for="startDateDay">Berlaku Sampai (Tanggal Jatuh Tempo)</label>
+    
+    <div class="form-row" id="startDateFlex" style="gap: 5px; margin-bottom: 0; display: flex;"> 
+        
+        <select id="startDateDay" style="flex: 1;"></select> 
+        
+        <select id="startDateMonth" style="flex: 3;"></select>
+        
+        <select id="startDateYear" style="flex: 2;"></select>
+    </div>
+    <p style="color: gray;">* Lihat masa berlaku dari STNK/SKPD.</p>
+</div>
                         
                         <div class="form-group">
                             <label for="nominalPkb">Nominal Pokok PKB 1 Tahun</label>
