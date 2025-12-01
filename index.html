@@ -1339,20 +1339,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             }
 
-            const yearsDiff = today.getFullYear() - checkDate.getFullYear();
-            const monthsDiff = today.getMonth() - checkDate.getMonth();
-            let calculatedMonths = yearsDiff * 12 + monthsDiff;
+// Hitung selisih tahun dan bulan
+const yearsDiff = today.getFullYear() - checkDate.getFullYear();
+const monthsDiff = today.getMonth() - checkDate.getMonth();
+let calculatedMonths = yearsDiff * 12 + monthsDiff;
 
-            if (today.getDate() < checkDate.getDate()) {
-                calculatedMonths--;
-            }
+// --- LOGIKA BARU: Pecahan bulan dihitung 1 bulan penuh (Standar Samsat) ---
+// Jika tanggal hari ini LEBIH BESAR dari tanggal jatuh tempo
+// maka kita sudah memasuki hari denda pertama dari bulan denda berikutnya, jadi tambahkan 1.
+if (today.getDate() > checkDate.getDate()) {
+    calculatedMonths += 1;
+}
+// Jika tanggal hari ini KURANG DARI atau SAMA DENGAN tanggal jatuh tempo (contoh: tgl 27 vs 28),
+// kita tidak perlu mengurangi (seperti logika lama), sehingga hasilnya tetap berdasarkan selisih bulan mentah.
+// --- AKHIR LOGIKA BARU ---
 
-            if (calculatedMonths < 1 && today.getTime() > checkDate.getTime()) {
-                calculatedMonths = 1;
-            } else if (today.getTime() < checkDate.getTime()) {
-                calculatedMonths = 0;
-            }
+// Pastikan hasil minimal 1 jika sudah melewati tanggal jatuh tempo
+// Ini mengatasi kasus terlambat 1 hari (dimana monthsDiff = 0, tapi now > checkDate)
+if (calculatedMonths < 1 && today.getTime() > checkDate.getTime()) {
+    calculatedMonths = 1;
+} else if (today.getTime() < checkDate.getTime()) {
+    // Jika tanggal hari ini lebih awal dari jatuh tempo, keterlambatan 0
+    calculatedMonths = 0;
+}
 
+          
             let finalMonths = Math.min(Math.max(0, calculatedMonths), 24);
             totalMonthsAccumulated += finalMonths;
 
