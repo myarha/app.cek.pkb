@@ -1598,7 +1598,7 @@
         const initialYear = startDate.getFullYear(); 
         const currentYear = today.getFullYear();
         
-        let Y_NewestPayment;
+        /*let Y_NewestPayment;
         const anniversaryThisYear = new Date(currentYear, startDate.getMonth(), startDate.getDate());
         anniversaryThisYear.setHours(0, 0, 0, 0);
         const anniversaryNextYear = new Date(currentYear + 1, startDate.getMonth(), startDate.getDate());
@@ -1626,8 +1626,43 @@
                  Y_StartPayment = currentYear;
                  Y_NewestPayment = currentYear;
              }
+        }*/
+		
+        // --- PERBAIKAN LOGIKA: MAKSIMAL 6 TAHUN ---
+        const anniversaryThisYear = new Date(currentYear, startDate.getMonth(), startDate.getDate());
+        anniversaryThisYear.setHours(0, 0, 0, 0);
+
+        // Tentukan batas 90 hari sebelum jatuh tempo tahun ini
+        const ninetyDaysInMs = 90 * 24 * 60 * 60 * 1000;
+        const thresholdDate = new Date(anniversaryThisYear.getTime() - ninetyDaysInMs);
+
+        // 1. Tentukan Tahun Pembayaran Terbaru (Y_NewestPayment)
+        if (today >= thresholdDate) {
+            Y_NewestPayment = currentYear;
+        } else {
+            Y_NewestPayment = currentYear - 1;
         }
+
+        // 2. Tentukan Tahun Tertua (Maksimal 6 tahun termasuk tahun berjalan)
+        // Rumus: Tahun terbaru dikurangi 5 (karena total 6 tahun: 0,1,2,3,4,5)
+        const Y_OldestAllowed = Y_NewestPayment - 5; 
         
+        // Pilih mana yang lebih muda antara tahun awal kendaraan atau batas 6 tahun
+        let Y_StartPayment = Math.max(Y_OldestAllowed, initialYear);
+
+        // 3. Hitung Total Tahun
+        totalYears = Y_NewestPayment - Y_StartPayment + 1;
+
+        // Batasan tambahan untuk memastikan tidak melampaui 6 tahun secara absolut
+        if (totalYears > 6) totalYears = 6;
+
+        // Proteksi jika kendaraan baru (tahun ini)
+        if (totalYears <= 0) {
+            totalYears = 1;
+            Y_StartPayment = currentYear;
+            Y_NewestPayment = currentYear;
+        }
+        // --- SELESAI PERBAIKAN ---
         pkbPokokVal = nominalPkb * totalYears;
         opsenPokokVal = nominalOpsenPkb * totalYears;
 
@@ -2116,4 +2151,5 @@
 });
 </script>
 </body>
+
 </html>
